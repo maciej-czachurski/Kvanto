@@ -192,8 +192,7 @@
                        Title="New Task"
                        PrimaryButtonText="Add Task"
                        CloseButtonText="Cancel"
-                       PrimaryButtonCommand="{x:Bind ViewModel.AddTaskCommand}"
-                       IsOpen="{x:Bind ViewModel.IsAddTaskDialogOpen, Mode=TwoWay}">
+                       PrimaryButtonCommand="{x:Bind ViewModel.AddTaskCommand}">
             <StackPanel Spacing="16" MinWidth="360">
                 <TextBox Header="Title *"
                          PlaceholderText="What needs to be done?"
