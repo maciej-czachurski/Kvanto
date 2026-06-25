@@ -17,15 +17,22 @@ public sealed partial class TasksPage : Page
         InitializeComponent();
         _ = ViewModel.LoadTasksAsync();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        Unloaded += (_, _) => ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
     }
 
     private async void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(ViewModel.IsAddTaskDialogOpen) && ViewModel.IsAddTaskDialogOpen)
         {
-            AddTaskDialog.XamlRoot = XamlRoot;
-            await AddTaskDialog.ShowAsync();
-            ViewModel.IsAddTaskDialogOpen = false;
+            try
+            {
+                AddTaskDialog.XamlRoot = XamlRoot;
+                await AddTaskDialog.ShowAsync();
+            }
+            finally
+            {
+                ViewModel.IsAddTaskDialogOpen = false;
+            }
         }
     }
 
