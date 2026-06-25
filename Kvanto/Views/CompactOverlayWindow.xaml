@@ -1,0 +1,62 @@
+<Window
+    x:Class="Kvanto.Views.CompactOverlayWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Kvanto.Views"
+    Title="Kvanto – Compact">
+
+    <Grid Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+          CornerRadius="16">
+        <StackPanel Margin="16,12" Spacing="8">
+            <!-- Task name -->
+            <TextBlock x:Name="TaskNameLabel"
+                       Text="No active task"
+                       FontWeight="SemiBold" FontSize="14"
+                       TextTrimming="CharacterEllipsis" MaxLines="1" />
+
+            <!-- Timer display -->
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <TextBlock x:Name="TimerDisplay"
+                           Text="25:00"
+                           FontFamily="Consolas"
+                           FontSize="36" FontWeight="Bold" />
+                <StackPanel Spacing="4" VerticalAlignment="Center">
+                    <Button x:Name="StartStopBtn"
+                            Content="▶" FontSize="18"
+                            Click="OnStartStopClick"
+                            Width="40" Height="40" />
+                    <Button Content="■" FontSize="12"
+                            Click="OnStopClick"
+                            Width="40" Height="40" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Progress ring -->
+            <ProgressBar x:Name="TimerProgress"
+                         Value="0" Maximum="1"
+                         Height="4" CornerRadius="2"
+                         Foreground="{StaticResource PomodoroWorkBrush}" />
+
+            <!-- Session counter -->
+            <TextBlock x:Name="SessionCountLabel"
+                       Text=""
+                       Style="{ThemeResource CaptionTextBlockStyle}"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       HorizontalAlignment="Center" />
+
+            <!-- Pin toggle & open main window -->
+            <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
+                <Button x:Name="PinBtn" Click="OnPinClick"
+                        ToolTipService.ToolTip="Always on top"
+                        Width="32" Height="32">
+                    <FontIcon Glyph="&#xE718;" FontSize="12" />
+                </Button>
+                <Button Click="OnOpenMainClick"
+                        ToolTipService.ToolTip="Open Kvanto"
+                        Width="32" Height="32">
+                    <FontIcon Glyph="&#xE8A7;" FontSize="12" />
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

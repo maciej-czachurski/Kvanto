@@ -1,0 +1,63 @@
+<Window
+    x:Class="Kvanto.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Kvanto"
+    xmlns:views="using:Kvanto.Views"
+    Title="Kvanto">
+
+    <Grid>
+        <NavigationView
+            x:Name="NavView"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="true"
+            PaneDisplayMode="Left"
+            OpenPaneLength="220"
+            SelectionChanged="NavView_SelectionChanged"
+            Loaded="NavView_Loaded">
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem Tag="tasks" Icon="TaskView" Content="Tasks" />
+                <NavigationViewItem Tag="calendar" Content="Calendar">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE787;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Tag="reports" Content="Reports &amp; Analytics">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE9D9;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Tag="compact" Content="Compact View">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE740;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
+
+            <!-- Active Pomodoro status bar in nav pane header -->
+            <NavigationView.PaneHeader>
+                <StackPanel Margin="12,8,12,4" Spacing="4">
+                    <TextBlock Text="Kvanto" FontSize="22" FontWeight="Bold"
+                               Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                    <Border x:Name="PomodoroStatusBar"
+                            Background="{StaticResource KvantoPrimaryBrush}"
+                            CornerRadius="8" Padding="10,6"
+                            Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE768;" FontSize="14" Foreground="White" />
+                            <TextBlock x:Name="PomodoroTimerLabel"
+                                       Text="25:00" FontSize="14" FontWeight="SemiBold"
+                                       Foreground="White" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </NavigationView.PaneHeader>
+
+            <Frame x:Name="ContentFrame" Margin="0" />
+        </NavigationView>
+    </Grid>
+</Window>

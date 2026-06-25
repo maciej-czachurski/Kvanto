@@ -1,0 +1,224 @@
+<Page
+    x:Class="Kvanto.Views.TasksPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Kvanto.Views"
+    xmlns:vm="using:Kvanto.ViewModels"
+    xmlns:models="using:Kvanto.Models"
+    xmlns:conv="using:Kvanto.Converters"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+        <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibility" />
+        <conv:PriorityToColorConverter x:Key="PriorityToColor" />
+        <conv:MinutesToDisplayConverter x:Key="MinutesToDisplay" />
+    </Page.Resources>
+
+    <Grid Margin="24,16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ── Header ── -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="Tasks" Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock Text="Manage your tasks and track time with Pomodoro"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+            <Button Grid.Column="1"
+                    Command="{x:Bind ViewModel.OpenAddTaskDialogCommand}"
+                    Style="{ThemeResource AccentButtonStyle}"
+                    VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="&#xE710;" FontSize="14" />
+                    <TextBlock Text="New Task" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- ── Pomodoro Timer Panel ── -->
+        <Border Grid.Row="1"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1" CornerRadius="12"
+                Padding="20,16" Margin="0,0,0,16"
+                Visibility="{x:Bind ViewModel.IsPomodoroRunning, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Spacing="8">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE768;" FontSize="16"
+                                  Foreground="{StaticResource PomodoroWorkBrush}" />
+                        <TextBlock x:Name="ActiveTaskLabel" FontWeight="SemiBold"
+                                   Text="{x:Bind ViewModel.ActiveTask.Title, Mode=OneWay}" />
+                        <TextBlock Text="{x:Bind ViewModel.SessionCountLabel, Mode=OneWay}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <ProgressBar Value="{x:Bind ViewModel.PomodoroProgress, Mode=OneWay}"
+                                 Maximum="1" Height="6" CornerRadius="3"
+                                 Foreground="{StaticResource PomodoroWorkBrush}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind ViewModel.PomodoroTimeDisplay, Mode=OneWay}"
+                               FontSize="28" FontWeight="Bold" FontFamily="Consolas" />
+                    <Button Command="{x:Bind ViewModel.StopPomodoroCommand}" ToolTipService.ToolTip="Stop">
+                        <FontIcon Glyph="&#xE71A;" FontSize="14" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ── Task List ── -->
+        <Grid Grid.Row="2">
+            <!-- Empty state -->
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12"
+                        Visibility="{x:Bind ViewModel.Tasks.Count, Mode=OneWay, Converter={StaticResource InverseBoolToVisibility}}">
+                <FontIcon Glyph="&#xF16B;" FontSize="48"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBlock Text="No tasks yet" Style="{ThemeResource SubtitleTextBlockStyle}"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="Add a task to start tracking your time"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <ListView ItemsSource="{x:Bind ViewModel.Tasks, Mode=OneWay}"
+                      SelectedItem="{x:Bind ViewModel.SelectedTask, Mode=TwoWay}"
+                      SelectionMode="Single">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Margin" Value="0,3" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:TaskItem">
+                        <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1" CornerRadius="10" Padding="16,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Priority color bar -->
+                                <Border Grid.Column="0" CornerRadius="2"
+                                        Background="{Binding Priority, Converter={StaticResource PriorityToColor}}"
+                                        Margin="0,0,12,0" />
+
+                                <!-- Task info -->
+                                <StackPanel Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="{x:Bind Title}" FontWeight="SemiBold" FontSize="15" />
+                                    <TextBlock Text="{x:Bind Description}"
+                                               Style="{ThemeResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               MaxLines="2" TextTrimming="CharacterEllipsis"
+                                               Visibility="{x:Bind Description, Converter={StaticResource BoolToVisibility}}" />
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                            <Run Text="🏷 " /><Run Text="{x:Bind Category}" />
+                                        </TextBlock>
+                                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                            <Run Text="🍅 " />
+                                            <Run Text="{x:Bind CompletedPomodoros}" />
+                                            <Run Text="/" />
+                                            <Run Text="{x:Bind EstimatedPomodoros}" />
+                                        </TextBlock>
+                                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                            <Run Text="⏱ " />
+                                            <Run Text="{x:Bind TotalWorkedMinutes, Converter={StaticResource MinutesToDisplay}}" />
+                                        </TextBlock>
+                                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                            <Run Text="📅 " />
+                                            <Run Text="{x:Bind WorkedDaysCount}" />
+                                            <Run Text=" days" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Action buttons -->
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4"
+                                            VerticalAlignment="Center">
+                                    <!-- Mark complete -->
+                                    <Button ToolTipService.ToolTip="Mark as complete"
+                                            Click="OnCompleteTaskClick" Tag="{x:Bind}">
+                                        <FontIcon Glyph="&#xE73E;" FontSize="14" />
+                                    </Button>
+                                    <!-- Delete -->
+                                    <Button ToolTipService.ToolTip="Delete task"
+                                            Click="OnDeleteTaskClick" Tag="{x:Bind}">
+                                        <FontIcon Glyph="&#xE74D;" FontSize="14" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <!-- ── Start Pomodoro FAB ── -->
+        <Button Grid.Row="2"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                Margin="0,0,8,8"
+                Command="{x:Bind ViewModel.StartPomodoroCommand}"
+                Style="{ThemeResource AccentButtonStyle}"
+                CornerRadius="28" Width="56" Height="56"
+                ToolTipService.ToolTip="Start Pomodoro for selected task">
+            <FontIcon Glyph="&#xE768;" FontSize="20" />
+        </Button>
+
+        <!-- ── Add Task Dialog ── -->
+        <ContentDialog x:Name="AddTaskDialog"
+                       Title="New Task"
+                       PrimaryButtonText="Add Task"
+                       CloseButtonText="Cancel"
+                       PrimaryButtonCommand="{x:Bind ViewModel.AddTaskCommand}"
+                       IsOpen="{x:Bind ViewModel.IsAddTaskDialogOpen, Mode=TwoWay}">
+            <StackPanel Spacing="16" MinWidth="360">
+                <TextBox Header="Title *"
+                         PlaceholderText="What needs to be done?"
+                         Text="{x:Bind ViewModel.NewTaskTitle, Mode=TwoWay}"
+                         MaxLength="200" />
+                <TextBox Header="Description"
+                         PlaceholderText="Optional notes…"
+                         Text="{x:Bind ViewModel.NewTaskDescription, Mode=TwoWay}"
+                         AcceptsReturn="True" MaxHeight="100"
+                         MaxLength="2000" />
+                <TextBox Header="Category"
+                         PlaceholderText="e.g. Work, Personal, Learning"
+                         Text="{x:Bind ViewModel.NewTaskCategory, Mode=TwoWay}"
+                         MaxLength="50" />
+                <NumberBox Header="Estimated Pomodoros"
+                           Value="{x:Bind ViewModel.NewTaskEstimatedPomodoros, Mode=TwoWay}"
+                           Minimum="1" Maximum="99" SpinButtonPlacementMode="Inline" />
+                <ComboBox Header="Priority"
+                          SelectedItem="{x:Bind ViewModel.NewTaskPriority, Mode=TwoWay}">
+                    <ComboBoxItem Content="Low" />
+                    <ComboBoxItem Content="Medium" />
+                    <ComboBoxItem Content="High" />
+                    <ComboBoxItem Content="Critical" />
+                </ComboBox>
+            </StackPanel>
+        </ContentDialog>
+    </Grid>
+</Page>
