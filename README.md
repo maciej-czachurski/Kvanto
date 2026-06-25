@@ -1,0 +1,2 @@
+# Kvanto
+pomodoro tracking app
