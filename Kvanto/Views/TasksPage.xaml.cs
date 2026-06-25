@@ -16,6 +16,17 @@ public sealed partial class TasksPage : Page
         ViewModel = new MainViewModel(db, App.PomodoroService!);
         InitializeComponent();
         _ = ViewModel.LoadTasksAsync();
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+    }
+
+    private async void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ViewModel.IsAddTaskDialogOpen) && ViewModel.IsAddTaskDialogOpen)
+        {
+            AddTaskDialog.XamlRoot = XamlRoot;
+            await AddTaskDialog.ShowAsync();
+            ViewModel.IsAddTaskDialogOpen = false;
+        }
     }
 
     private async void OnCompleteTaskClick(object sender, RoutedEventArgs e)
