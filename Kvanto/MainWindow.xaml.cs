@@ -20,7 +20,7 @@ public sealed partial class MainWindow : Window
         InitializeComponent();
 
         // Set up AppWindow for title bar customization
-        AppWindow = this.AppWindow;
+        AppWindow = base.AppWindow;
         AppWindow.Title = "Kvanto";
         AppWindow.SetIcon("Assets\\AppIcon.ico");
 
