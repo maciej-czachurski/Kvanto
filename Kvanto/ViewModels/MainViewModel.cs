@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kvanto.Models;
 using Kvanto.Services;
+using TaskStatus = Kvanto.Models.TaskStatus;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
