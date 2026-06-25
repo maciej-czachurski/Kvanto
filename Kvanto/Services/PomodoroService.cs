@@ -38,6 +38,7 @@ public class PomodoroService : IDisposable
 
     // State
     private PomodoroState _state = PomodoroState.Idle;
+    private bool _isPaused;
     private int _currentTaskId;
     private string _currentTaskTitle = string.Empty;
     private int _completedSessions;
@@ -61,7 +62,7 @@ public class PomodoroService : IDisposable
     public int CurrentTaskId => _currentTaskId;
     public string CurrentTaskTitle => _currentTaskTitle;
     public bool IsRunning => _state != PomodoroState.Idle;
-    public bool IsPaused => _state != PomodoroState.Idle && _timer == null;
+    public bool IsPaused => _isPaused;
 
     public PomodoroService(NotificationService notifications)
     {
@@ -109,10 +110,12 @@ public class PomodoroService : IDisposable
             _cts = null;
             _timer.Dispose();
             _timer = null;
+            _isPaused = true;
         }
         else
         {
             // Resume
+            _isPaused = false;
             StartTimer();
         }
     }
@@ -124,6 +127,7 @@ public class PomodoroService : IDisposable
         _cts = null;
         _timer?.Dispose();
         _timer = null;
+        _isPaused = false;
         _state = PomodoroState.Idle;
         _currentTaskId = 0;
         _currentTaskTitle = string.Empty;

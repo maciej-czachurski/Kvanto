@@ -55,7 +55,8 @@ public class HexToColorConverter : IValueConverter
                     byte b = System.Convert.ToByte(hex.Substring(4, 2), 16);
                     return Color.FromArgb(255, r, g, b);
                 }
-                catch { }
+                catch (FormatException) { }
+                catch (OverflowException) { }
             }
         }
         return Colors.Transparent;
