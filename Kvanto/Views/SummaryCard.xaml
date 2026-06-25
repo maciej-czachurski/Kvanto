@@ -1,0 +1,22 @@
+<UserControl
+    x:Class="Kvanto.Views.SummaryCard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1" CornerRadius="12"
+            Padding="14,12" Margin="4">
+        <StackPanel Spacing="6" HorizontalAlignment="Center">
+            <FontIcon x:Name="CardIcon" FontSize="20"
+                      Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+            <TextBlock x:Name="CardValue"
+                       FontSize="22" FontWeight="Bold"
+                       HorizontalAlignment="Center" />
+            <TextBlock x:Name="CardLabel"
+                       Style="{ThemeResource CaptionTextBlockStyle}"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       HorizontalAlignment="Center" />
+        </StackPanel>
+    </Border>
+</UserControl>

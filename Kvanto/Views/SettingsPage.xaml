@@ -1,0 +1,143 @@
+<Page
+    x:Class="Kvanto.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <ScrollViewer>
+        <StackPanel Margin="24,16" Spacing="24" MaxWidth="700">
+            <StackPanel>
+                <TextBlock Text="Settings" Style="{ThemeResource TitleTextBlockStyle}" />
+                <TextBlock Text="Customize Kvanto to your workflow"
+                           Style="{ThemeResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <!-- ── Pomodoro settings ── -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="Pomodoro" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1" CornerRadius="12" Padding="16">
+                    <StackPanel Spacing="16">
+                        <NumberBox x:Name="WorkDurationBox"
+                                   Header="Work duration (minutes)"
+                                   Value="25" Minimum="1" Maximum="120"
+                                   SpinButtonPlacementMode="Inline" />
+                        <NumberBox x:Name="ShortBreakBox"
+                                   Header="Short break (minutes)"
+                                   Value="5" Minimum="1" Maximum="60"
+                                   SpinButtonPlacementMode="Inline" />
+                        <NumberBox x:Name="LongBreakBox"
+                                   Header="Long break (minutes)"
+                                   Value="15" Minimum="5" Maximum="60"
+                                   SpinButtonPlacementMode="Inline" />
+                        <NumberBox x:Name="LongBreakIntervalBox"
+                                   Header="Sessions before long break"
+                                   Value="4" Minimum="1" Maximum="10"
+                                   SpinButtonPlacementMode="Inline" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- ── Keyboard shortcuts ── -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="Keyboard Shortcuts" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1" CornerRadius="12" Padding="16">
+                    <StackPanel Spacing="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Start / Pause Pomodoro" FontWeight="SemiBold" />
+                                <TextBlock Text="Toggle the active session" FontSize="12"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </StackPanel>
+                            <Border Grid.Column="1" Background="{ThemeResource ControlFillColorDefaultBrush}"
+                                    CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                <TextBlock Text="Ctrl + Alt + S" FontFamily="Consolas" />
+                            </Border>
+                        </Grid>
+                        <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Skip Session" FontWeight="SemiBold" />
+                                <TextBlock Text="Skip to the next session" FontSize="12"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </StackPanel>
+                            <Border Grid.Column="1" Background="{ThemeResource ControlFillColorDefaultBrush}"
+                                    CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                <TextBlock Text="Ctrl + Alt + N" FontFamily="Consolas" />
+                            </Border>
+                        </Grid>
+                        <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Show / Open Kvanto" FontWeight="SemiBold" />
+                                <TextBlock Text="Bring the app to foreground from tray" FontSize="12"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </StackPanel>
+                            <Border Grid.Column="1" Background="{ThemeResource ControlFillColorDefaultBrush}"
+                                    CornerRadius="4" Padding="8,4" VerticalAlignment="Center">
+                                <TextBlock Text="Ctrl + Alt + K" FontFamily="Consolas" />
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- ── Notifications ── -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="Notifications" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1" CornerRadius="12" Padding="16">
+                    <StackPanel Spacing="12">
+                        <ToggleSwitch x:Name="NotificationsToggle"
+                                      Header="Show desktop notifications"
+                                      IsOn="True" />
+                        <ToggleSwitch x:Name="SoundToggle"
+                                      Header="Play sound at end of session"
+                                      IsOn="True" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- ── Startup ── -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="Startup" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1" CornerRadius="12" Padding="16">
+                    <StackPanel Spacing="12">
+                        <ToggleSwitch x:Name="StartWithWindowsToggle"
+                                      Header="Start with Windows"
+                                      IsOn="False"
+                                      Toggled="OnStartWithWindowsToggled" />
+                        <ToggleSwitch x:Name="StartMinimizedToggle"
+                                      Header="Start minimized to system tray"
+                                      IsOn="False" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- ── Save button ── -->
+            <Button Content="Save Settings"
+                    Style="{ThemeResource AccentButtonStyle}"
+                    Click="OnSaveSettingsClick"
+                    HorizontalAlignment="Right" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
