@@ -36,6 +36,36 @@ public class CalendarDayBackgroundConverter : IValueConverter
 }
 
 /// <summary>
+/// Converts a hex color string (e.g. "#6366F1") to a <see cref="Windows.UI.Color"/>.
+/// Returns <see cref="Colors.Transparent"/> for invalid input.
+/// </summary>
+public class HexToColorConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, string language)
+    {
+        if (value is string hex)
+        {
+            hex = hex.TrimStart('#');
+            if (hex.Length == 6)
+            {
+                try
+                {
+                    byte r = System.Convert.ToByte(hex.Substring(0, 2), 16);
+                    byte g = System.Convert.ToByte(hex.Substring(2, 2), 16);
+                    byte b = System.Convert.ToByte(hex.Substring(4, 2), 16);
+                    return Color.FromArgb(255, r, g, b);
+                }
+                catch { }
+            }
+        }
+        return Colors.Transparent;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, string language) =>
+        throw new NotImplementedException();
+}
+
+/// <summary>
 /// Converts a fraction (0.0–1.0) to a pixel width, assuming the containing
 /// element reports its actual width.  Used for the per-task analytics bar.
 /// Falls back to a static width of 600px × fraction.

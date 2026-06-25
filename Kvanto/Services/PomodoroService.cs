@@ -61,6 +61,7 @@ public class PomodoroService : IDisposable
     public int CurrentTaskId => _currentTaskId;
     public string CurrentTaskTitle => _currentTaskTitle;
     public bool IsRunning => _state != PomodoroState.Idle;
+    public bool IsPaused => _state != PomodoroState.Idle && _timer == null;
 
     public PomodoroService(NotificationService notifications)
     {
@@ -124,6 +125,8 @@ public class PomodoroService : IDisposable
         _timer?.Dispose();
         _timer = null;
         _state = PomodoroState.Idle;
+        _currentTaskId = 0;
+        _currentTaskTitle = string.Empty;
         RaiseStateChanged();
     });
 

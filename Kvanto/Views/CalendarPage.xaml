@@ -10,6 +10,7 @@
     <Page.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibility" />
         <conv:CalendarDayBackgroundConverter x:Key="DayBackground" />
+        <conv:HexToColorConverter x:Key="HexToColor" />
     </Page.Resources>
 
     <Grid Margin="24,16">
@@ -107,7 +108,7 @@
                                     <DataTemplate x:DataType="vm:CalendarTaskEntry">
                                         <Border CornerRadius="3" Padding="3,1" Margin="0,1">
                                             <Border.Background>
-                                                <SolidColorBrush Color="{x:Bind Color}" Opacity="0.8" />
+                                                <SolidColorBrush Color="{x:Bind Color, Converter={StaticResource HexToColor}}" Opacity="0.8" />
                                             </Border.Background>
                                             <TextBlock Text="{x:Bind DisplayText}"
                                                        FontSize="10" Foreground="White"
