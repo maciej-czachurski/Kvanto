@@ -10,6 +10,7 @@
     <Page.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibility" />
         <conv:FractionToWidthConverter x:Key="FractionToWidth" />
+        <conv:HexToColorConverter x:Key="HexToColor" />
     </Page.Resources>
 
     <ScrollViewer>
@@ -155,7 +156,7 @@
                                                 Height="8"
                                                 Width="{x:Bind BarWidthFraction, Converter={StaticResource FractionToWidth}}">
                                             <Border.Background>
-                                                <SolidColorBrush Color="{x:Bind Color}" />
+                                               <SolidColorBrush Color="{x:Bind Color, Converter={StaticResource HexToColor}}" />
                                             </Border.Background>
                                         </Border>
                                     </Grid>

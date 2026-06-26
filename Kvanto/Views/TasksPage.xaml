@@ -189,6 +189,7 @@
 
         <!-- ── Add Task Dialog ── -->
         <ContentDialog x:Name="AddTaskDialog"
+                       Grid.Row="2"
                        Title="New Task"
                        PrimaryButtonText="Add Task"
                        CloseButtonText="Cancel"

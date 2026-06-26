@@ -95,7 +95,7 @@ public partial class MainViewModel : BaseViewModel
         if (_pomodoro.IsRunning && _pomodoro.CurrentTaskId == SelectedTask.Id)
         {
             _pomodoro.TogglePause();
-            PomodoroLabel = "Resume Pomodoro";
+            PomodoroLabel = _pomodoro.IsPaused ? "Resume Pomodoro" : "Pause";
             return;
         }
 

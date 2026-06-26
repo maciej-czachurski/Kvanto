@@ -91,7 +91,7 @@ public sealed partial class CompactOverlayWindow : Window
         });
     }
 
-    private async void OnStartStopClick(object sender, RoutedEventArgs e)
+    private void OnStartStopClick(object sender, RoutedEventArgs e)
     {
         if (App.PomodoroService == null) return;
         if (App.PomodoroService.IsRunning)
