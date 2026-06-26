@@ -18,6 +18,11 @@ public class CalendarDayViewModel : ObservableObject
     public ObservableCollection<CalendarTaskEntry> TaskEntries { get; } = new();
     public int TotalMinutes => GetTotalMinutes();
 
+    public CalendarDayViewModel()
+    {
+        TaskEntries.CollectionChanged += (_, _) => OnPropertyChanged(nameof(TotalMinutes));
+    }
+
     private int GetTotalMinutes()
     {
         int sum = 0;

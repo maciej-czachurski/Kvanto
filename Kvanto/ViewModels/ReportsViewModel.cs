@@ -35,10 +35,10 @@ public partial class ReportsViewModel : BaseViewModel
     private readonly DatabaseService _db;
 
     [ObservableProperty]
-    private DateTime _fromDate = DateTime.Today.AddDays(-30);
+    private DateTimeOffset _fromDate = DateTimeOffset.Now.AddDays(-30).Date;
 
     [ObservableProperty]
-    private DateTime _toDate = DateTime.Today;
+    private DateTimeOffset _toDate = DateTimeOffset.Now.Date;
 
     [ObservableProperty]
     private ObservableCollection<TaskAnalyticsItem> _taskAnalytics = new();
@@ -74,8 +74,8 @@ public partial class ReportsViewModel : BaseViewModel
     {
         await RunSafeAsync(async () =>
         {
-            var analytics = await _db.GetTaskAnalyticsAsync(FromDate, ToDate);
-            var dailies = await _db.GetDailyTotalsAsync(FromDate, ToDate);
+            var analytics = await _db.GetTaskAnalyticsAsync(FromDate.DateTime, ToDate.DateTime);
+            var dailies = await _db.GetDailyTotalsAsync(FromDate.DateTime, ToDate.DateTime);
 
             // Summary stats
             int totalMin = analytics.Sum(x => x.TotalMinutes);
@@ -121,24 +121,25 @@ public partial class ReportsViewModel : BaseViewModel
     [RelayCommand]
     public Task SetRangeLastWeekAsync()
     {
-        FromDate = DateTime.Today.AddDays(-7);
-        ToDate = DateTime.Today;
+        FromDate = DateTimeOffset.Now.AddDays(-7).Date;
+        ToDate = DateTimeOffset.Now.Date;
         return LoadReportAsync();
     }
 
     [RelayCommand]
     public Task SetRangeLastMonthAsync()
     {
-        FromDate = DateTime.Today.AddDays(-30);
-        ToDate = DateTime.Today;
+        FromDate = DateTimeOffset.Now.AddDays(-30).Date;
+        ToDate = DateTimeOffset.Now.Date;
         return LoadReportAsync();
     }
 
     [RelayCommand]
     public Task SetRangeThisYearAsync()
     {
-        FromDate = new DateTime(DateTime.Today.Year, 1, 1);
-        ToDate = DateTime.Today;
+        var now = DateTimeOffset.Now;
+        FromDate = new DateTimeOffset(now.Year, 1, 1, 0, 0, 0, now.Offset);
+        ToDate = now.Date;
         return LoadReportAsync();
     }
 
