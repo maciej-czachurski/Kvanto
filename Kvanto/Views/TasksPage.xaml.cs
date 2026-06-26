@@ -13,7 +13,7 @@ public sealed partial class TasksPage : Page
     public TasksPage()
     {
         var db = new DatabaseService(App.DbContext!);
-        ViewModel = new MainViewModel(db, App.PomodoroService!);
+        ViewModel = new MainViewModel(db, App.PomodoroService!, DispatcherQueue);
         InitializeComponent();
         _ = ViewModel.LoadTasksAsync();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;

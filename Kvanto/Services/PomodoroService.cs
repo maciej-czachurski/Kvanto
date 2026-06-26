@@ -121,7 +121,7 @@ public class PomodoroService : IDisposable
     }
 
     /// <summary>Stop the active session.</summary>
-    public Task StopAsync(bool saveSession = true) => Task.Run(() =>
+    public Task StopAsync(bool saveSession = true)
     {
         _cts?.Cancel();
         _cts = null;
@@ -132,7 +132,8 @@ public class PomodoroService : IDisposable
         _currentTaskId = 0;
         _currentTaskTitle = string.Empty;
         RaiseStateChanged();
-    });
+        return Task.CompletedTask;
+    }
 
     private void StartTimer()
     {

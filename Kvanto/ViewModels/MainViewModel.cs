@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Kvanto.Models;
 using Kvanto.Services;
+using Microsoft.UI.Dispatching;
 using TaskStatus = Kvanto.Models.TaskStatus;
 using System;
 using System.Collections.ObjectModel;
@@ -14,6 +15,7 @@ public partial class MainViewModel : BaseViewModel
 {
     private readonly DatabaseService _db;
     private readonly PomodoroService _pomodoro;
+    private readonly DispatcherQueue? _dispatcherQueue;
 
     [ObservableProperty]
     private ObservableCollection<TaskItem> _tasks = new();
@@ -58,16 +60,21 @@ public partial class MainViewModel : BaseViewModel
     [ObservableProperty]
     private int _newTaskEstimatedPomodoros = 1;
 
+    // Stores the enum as an index so ComboBox.SelectedIndex can bind TwoWay correctly.
+    // Matches TaskPriority enum order: Low=0, Medium=1, High=2, Critical=3.
     [ObservableProperty]
-    private TaskPriority _newTaskPriority = TaskPriority.Medium;
+    private int _newTaskPriorityIndex = (int)TaskPriority.Medium;
+
+    public TaskPriority NewTaskPriority => (TaskPriority)NewTaskPriorityIndex;
 
     private int _completedSessions;
     private int _currentSessionDbId;
 
-    public MainViewModel(DatabaseService db, PomodoroService pomodoro)
+    public MainViewModel(DatabaseService db, PomodoroService pomodoro, DispatcherQueue? dispatcherQueue = null)
     {
         _db = db;
         _pomodoro = pomodoro;
+        _dispatcherQueue = dispatcherQueue;
 
         _pomodoro.TimerTick += OnTimerTick;
         _pomodoro.SessionStateChanged += OnStateChanged;
@@ -134,7 +141,7 @@ public partial class MainViewModel : BaseViewModel
         NewTaskDescription = string.Empty;
         NewTaskCategory = "General";
         NewTaskEstimatedPomodoros = 1;
-        NewTaskPriority = TaskPriority.Medium;
+        NewTaskPriorityIndex = (int)TaskPriority.Medium;
         IsAddTaskDialogOpen = true;
     }
 
@@ -182,25 +189,45 @@ public partial class MainViewModel : BaseViewModel
 
     private void OnTimerTick(object? sender, PomodoroTimerEventArgs e)
     {
-        PomodoroTimeDisplay = e.TimeRemaining.ToString(@"mm\:ss");
-        PomodoroProgress = e.ProgressFraction;
-        IsBreak = e.IsBreak;
+        void Update()
+        {
+            PomodoroTimeDisplay = e.TimeRemaining.ToString(@"mm\:ss");
+            PomodoroProgress = e.ProgressFraction;
+            IsBreak = e.IsBreak;
+        }
+
+        if (_dispatcherQueue != null)
+            _dispatcherQueue.TryEnqueue(Update);
+        else
+            Update();
     }
 
     private void OnStateChanged(object? sender, PomodoroStateEventArgs e)
     {
-        IsPomodoroRunning = e.State != PomodoroState.Idle;
-        if (e.State == PomodoroState.Idle)
+        void Update()
         {
-            PomodoroLabel = "Start Pomodoro";
-            ActiveTask = null;
+            IsPomodoroRunning = e.State != PomodoroState.Idle;
+            if (e.State == PomodoroState.Idle)
+            {
+                PomodoroLabel = "Start Pomodoro";
+                ActiveTask = null;
+            }
         }
+
+        if (_dispatcherQueue != null)
+            _dispatcherQueue.TryEnqueue(Update);
+        else
+            Update();
     }
 
     private async void OnSessionCompleted(object? sender, PomodoroStateEventArgs e)
     {
         _completedSessions = e.CompletedSessionsCount;
-        SessionCountLabel = $"🍅 ×{_completedSessions}";
+
+        if (_dispatcherQueue != null)
+            _dispatcherQueue.TryEnqueue(() => SessionCountLabel = $"🍅 ×{_completedSessions}");
+        else
+            SessionCountLabel = $"🍅 ×{_completedSessions}";
 
         if (_currentSessionDbId > 0)
             await _db.CompleteSessionAsync(_currentSessionDbId, completed: true);
