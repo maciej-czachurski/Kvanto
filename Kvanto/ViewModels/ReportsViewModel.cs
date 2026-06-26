@@ -121,16 +121,18 @@ public partial class ReportsViewModel : BaseViewModel
     [RelayCommand]
     public Task SetRangeLastWeekAsync()
     {
-        FromDate = DateTimeOffset.Now.AddDays(-7).Date;
-        ToDate = DateTimeOffset.Now.Date;
+        var now = DateTimeOffset.Now;
+        FromDate = now.AddDays(-7).Date;
+        ToDate = now.Date;
         return LoadReportAsync();
     }
 
     [RelayCommand]
     public Task SetRangeLastMonthAsync()
     {
-        FromDate = DateTimeOffset.Now.AddDays(-30).Date;
-        ToDate = DateTimeOffset.Now.Date;
+        var now = DateTimeOffset.Now;
+        FromDate = now.AddDays(-30).Date;
+        ToDate = now.Date;
         return LoadReportAsync();
     }
 
